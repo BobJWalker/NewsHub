@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "NewsHub.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "NEWSHUB_CONNECTION_STRING": "Server=K8sCluster;Integrated Security=False;Database=NewsHub_Local;trustServerCertificate=true;User Id=Local_Svc;Password=Password01!",        
+      },
+      "applicationUrl": "https://localhost:57512;http://localhost:57513"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>  
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="BeforeDeploymentScripts\**" />
+      <EmbeddedResource Remove="BeforeDeploymentScripts\**" />
+      <None Remove="BeforeDeploymentScripts\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="PostDeploymentScripts\001_GrantWebUserRolePermissions.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="DeploymentScripts\001_CreateArticleTable.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="DeploymentScripts\002_CreateFeedLoadTable.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="DeploymentScripts\003_CreateFeedLoadLogTable.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="DeploymentScripts\004_CreateWebUserRole.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="PostDeploymentScripts\001_GrantWebUserRolePermissions.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="dbup-sqlserver" Version="7.2.0" />
+    </ItemGroup>
+
+</Project>

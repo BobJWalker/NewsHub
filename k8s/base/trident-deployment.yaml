@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trident-deployment  
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      component: trident-web
+  template:
+    metadata:
+      labels:
+        component: trident-web
+    spec:
+      containers:
+        - name: trident-web
+          image: bobjwalker99/trident:6.0.9
+          imagePullPolicy: "Always"
+          ports:
+           - containerPort: 8080
+             name: http-port
+          env:
+           - name: TRIDENT_CONNECTION_STRING
+             valueFrom:
+               secretKeyRef:
+                 name: trident-credentials
+                 key: connectionString  
+           - name: TRIDENT_SUMOLOGIC_URL
+             valueFrom:
+               secretKeyRef:
+                 name: trident-credentials
+                 key: sumologicUrl
+           - name: TRIDENT_INSTANCE_URL
+             valueFrom:
+               secretKeyRef:
+                 name: trident-credentials
+                 key: instanceUrl
+           - name: TRIDENT_INSTANCE_API_KEY
+             valueFrom:
+               secretKeyRef:
+                 name: trident-credentials
+                 key: instanceApiKey
+           - name: TRIDENT_ENVIRONMENT
+             valueFrom:
+               secretKeyRef:
+                 name: trident-credentials
+                 key: environment
+           - name: TRIDENT_OPEN_FEATURE_CLIENT_ID
+             valueFrom:
+               secretKeyRef:
+                 name: trident-credentials
+                 key: openFeatureClientId
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trident-app-cluster-ip-service  
+spec:
+  type: ClusterIP
+  selector:
+    component: trident-web
+  ports:
+    - port: 6800
+      targetPort: 8080  
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: trident-ingress-http-route
+  namespace: trident
+spec:
+  parentRefs:
+  - name: public-gateway
+    namespace: traefik
+  hostnames:
+    - trident.bobjwalker.local
+  rules:
+    - backendRefs:
+        - name: trident-app-cluster-ip-service  
+          port: 6800 
